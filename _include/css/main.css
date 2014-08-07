@@ -310,7 +310,7 @@ h3.spec {
 #home-slider .slider-text {
 	position: absolute;
 	left: 50%;
-	top: 50%;
+	top: 55%;
 	margin: -150px 0 0 -585px;
 	width: 1170px;
 	height: 250px;
@@ -319,18 +319,19 @@ h3.spec {
 }
 
 #home-slider #slidecaption {
+	font-weight: 900;
 	width: 100%;
-	line-height: 250px;
+	line-height: 80px;
 	margin: 0;
 	text-align: center;
 	text-shadow: none;	
 }
 
 #home-slider .slide-content {
-	font-size: 60px;
+	font-size: 74px;
 	color: #FFFFFF;
 	letter-spacing: -3px;
-	text-transform: uppercase;	
+	/*text-transform: uppercase;*/
 }
 
 #home-slider .control-nav {
@@ -856,7 +857,7 @@ nav#menu #menu-nav li a:hover {
 }
 
 .social-icons {
-	margin: 0;
+	margin: 0 0 25px 0;
 	padding: 0;
 }
 

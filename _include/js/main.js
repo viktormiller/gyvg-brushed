@@ -50,7 +50,7 @@ BRUSHED.slider = function(){
 	$.supersized({
 		// Functionality
 		slideshow               :   1,			// Slideshow on/off
-		autoplay				:	1,			// Slideshow starts playing automatically
+		autoplay				:	0,			// Slideshow starts playing automatically
 		start_slide             :   1,			// Start slide (0 is random)
 		stop_loop				:	0,			// Pauses slideshow on last slide
 		random					: 	0,			// Randomize slide order (Ignores start slide)
@@ -60,7 +60,7 @@ BRUSHED.slider = function(){
 		new_window				:	1,			// Image links open in new window/tab
 		pause_hover             :   0,			// Pause slideshow on hover
 		keyboard_nav            :   1,			// Keyboard navigation on/off
-		performance				:	1,			// 0-Normal, 1-Hybrid speed/quality, 2-Optimizes image quality, 3-Optimizes transition speed // (Only works for Firefox/IE, not Webkit)
+		performance				:	0,			// 0-Normal, 1-Hybrid speed/quality, 2-Optimizes image quality, 3-Optimizes transition speed // (Only works for Firefox/IE, not Webkit)
 		image_protect			:	1,			// Disables image dragging and right click with Javascript
 												   
 		// Size & Position						   
@@ -68,8 +68,8 @@ BRUSHED.slider = function(){
 		min_height		        :   0,			// Min height allowed (in pixels)
 		vertical_center         :   1,			// Vertically center background
 		horizontal_center       :   1,			// Horizontally center background
-		fit_always				:	0,			// Image will never exceed browser width or height (Ignores min. dimensions)
-		fit_portrait         	:   1,			// Portrait images will not exceed browser height
+		fit_always				:	1,			// Image will never exceed browser width or height (Ignores min. dimensions)
+		fit_portrait         	:   0,			// Portrait images will not exceed browser height
 		fit_landscape			:   0,			// Landscape images will not exceed browser width
 												   
 		// Components							
@@ -79,8 +79,8 @@ BRUSHED.slider = function(){
 		slides 					:  	[			// Slideshow Images
 											{image : '_include/img/slider-images/image01.jpg', title : '<div class="slide-content">&nbsp</div>', thumb : '', url : ''},
 											{image : '_include/img/slider-images/image02.jpg', title : '<div class="slide-content">Get to know us!</div>', thumb : '', url : ''},
-											{image : '_include/img/slider-images/image03.jpg', title : '<div class="slide-content">We are passionate for Jesus</div>', thumb : '', url : ''},
-											{image : '_include/img/slider-images/image04.jpg', title : '<div class="slide-content">Reach the world!</div>', thumb : '', url : ''}  
+											{image : '_include/img/slider-images/image03.jpg', title : '<div class="slide-content">We are <br> passionate for <br> Jesus</div>', thumb : '', url : ''},
+											{image : '_include/img/slider-images/image04.jpg', title : '<div class="slide-content">Traveling the world!</div>', thumb : '', url : ''}  
 									],
 									
 		// Theme Options			   
@@ -266,9 +266,9 @@ BRUSHED.menu = function(){
    Next Section Home Slider
 ================================================== */
 
-BRUSHED.goSectionHome = function(){
-	$('#nextsectionhome').on('click', function(){
-		$target = $($(this).attr('href')).offset().top-30;
+BRUSHED.goSectionNext = function(){
+	$('* #smscroll').on('click', function(){
+		$target = $($(this).attr('href')).offset().top-130;
 		
 		$('body, html').animate({scrollTop : $target}, 750, 'easeOutExpo');
 		return false;
@@ -505,7 +505,11 @@ $('#clock').countdown('2014/08/02 18:30:00').on('update.countdown', function(eve
 	Init
 ================================================== */
 
-BRUSHED.slider();
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+ 
+}else{
+	BRUSHED.slider();
+}
 
 $(document).ready(function(){
 	Modernizr.load([
@@ -540,7 +544,7 @@ $(document).ready(function(){
 	BRUSHED.mobileNav();
 	BRUSHED.listenerMenu();
 	BRUSHED.menu();
-	BRUSHED.goSectionHome();
+	BRUSHED.goSectionNext();
 	BRUSHED.goSection();
 	BRUSHED.goUp();
 	BRUSHED.filter();
