@@ -10,7 +10,7 @@
        -moz-border-radius: 0;
             border-radius: 0;
   	background-color: #3C3F45;
-  	color: #23262C;
+  	color: #7C8086;
   	vertical-align: middle;
   	text-align: center;
   	text-transform: uppercase;
@@ -88,7 +88,7 @@
   	display: block;
   	padding: 15px;
 	background:#3C3F45;
-	color: #23262C;
+	color: #7C8086;/* #23262C; */
 	font-size: 18px;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -125,7 +125,7 @@
     top: 50%;
     right: 20px;
     margin: -8px 0 0 0;
-    color: #23262C;
+    color: #7C8086;
     font-size: 18px;
 	
 	-webkit-transition: all 0.1s linear 0s;
@@ -261,7 +261,7 @@
 
 .nav > li > a {
   	display: block;
-  	color: #23262C;
+  	color: #7C8086;
   	font-size: 18px;
 	font-weight: 600;
 	text-transform: uppercase;

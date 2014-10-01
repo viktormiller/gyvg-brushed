@@ -77,10 +77,10 @@ BRUSHED.slider = function(){
 		thumb_links				:	0,			// Individual thumb links for each slide
 		thumbnail_navigation    :   0,			// Thumbnail navigation
 		slides 					:  	[			// Slideshow Images
-											{image : '_include/img/slider-images/image01.jpg', title : '<div class="slide-content">&nbsp</div>', thumb : '', url : ''},
-											{image : '_include/img/slider-images/image02.jpg', title : '<div class="slide-content">Lern uns kennen!</div>', thumb : '', url : ''}/* ,
-											{image : '_include/img/slider-images/image03.jpg', title : '<div class="slide-content">We are <br> passionate for <br> Jesus</div>', thumb : '', url : ''},
-											{image : '_include/img/slider-images/image04.jpg', title : '<div class="slide-content">Traveling the world!</div>', thumb : '', url : ''}   */
+											{image : '../_include/img/slider-images/image01.jpg', title : '<div class="slide-content">&nbsp</div>', thumb : '', url : ''},
+											{image : '../_include/img/slider-images/image02.jpg', title : '<div class="slide-content">우리 만나요!</div>', thumb : '', url : ''}/* ,
+											{image : '../_include/img/slider-images/image03.jpg', title : '<div class="slide-content">We are <br> passionate for <br> Jesus</div>', thumb : '', url : ''},
+											{image : '../_include/img/slider-images/image04.jpg', title : '<div class="slide-content">Traveling the world!</div>', thumb : '', url : ''}   */
 									],
 									
 		// Theme Options			   
@@ -195,7 +195,7 @@ BRUSHED.contactForm = function(){
 		
 		$.ajax({
 			type: "POST",
-			url: "_include/php/contact.php",
+			url: "../_include/php/contact.php",
 			data: fields,
 			dataType: 'json',
 			success: function(response) {
@@ -222,7 +222,7 @@ BRUSHED.tweetFeed = function(){
 	var valueTop = -64; // Margin Top Value
 	
     $("#ticker").tweet({
-          modpath: '_include/js/twitter/',
+          modpath: '../_include/js/twitter/',
           username: "Bluxart", // Change this with YOUR ID
           page: 1,
           avatar_size: 0,
@@ -268,7 +268,6 @@ BRUSHED.menu = function(){
 
 BRUSHED.goSectionNext = function(){
 	$('* #smscroll').on('click', function(){
-	
 		$target = $($(this).attr('href')).offset().top-130;
 		
 		$('body, html').animate({scrollTop : $target}, 750, 'easeOutExpo');
@@ -488,7 +487,7 @@ BRUSHED.gmap = function(){
 				  marker = new google.maps.Marker({
 					position: myLatlng,
 					map: map/*,
-					icon: "_include/img/marker.png"*/
+					icon: "../_include/img/marker.png"*/
 				  });
 			
 				  //Associate the styled map with the MapTypeId and set it to display.
@@ -509,16 +508,16 @@ BRUSHED.countdown = function(){
 var day = 4;
 var month = 10;
 $('#clock').countdown('2014/'+month+'/'+day+' 18:30:00').on('update.countdown', function(event) {
-	var format = '%-H Std. %M Min. %S Sek.';
+	var format = '%-H시 %M분 %S초';
 	if(event.offset.days > 0) {
-    format = '%-d T. ' + format;
+    format = '%-d일 ' + format;
     }
     if(event.offset.weeks > 0) {
-    	format = '%-w Wo. ' + format;
+    	format = '%-w week%!w ' + format;
     }
-    $(this).html(event.strftime('Samstag '+day+'.'+month+'.14 in<br>'+format));
+    $(this).html(event.strftime('토요일 '+month+'월 '+day+'일, 2014 <br>'+format));
 }).on('finish.countdown', function(event) {
-	$(this).html('Das Datum wird in k&uuml;rze bekannt gegeben!');
+	$(this).html('The time and date will be announced!');
 	$(this).parent().addClass('disabled');
 });
 }
@@ -571,7 +570,7 @@ $(document).ready(function(){
 	Modernizr.load([
 	{
 		test: Modernizr.placeholder,
-		nope: '_include/js/placeholder.js', 
+		nope: '../_include/js/placeholder.js', 
 		complete : function() {
 				if (!Modernizr.placeholder) {
 						Placeholders.init({

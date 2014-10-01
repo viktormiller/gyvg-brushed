@@ -25,7 +25,7 @@ html, hmtl a{
 
 body{
 	background:#2F3238;
-	color:#7F8289;
+	color:#B9BDC5;/* #7F8289; */
 	font-weight:300;
 	font-size:16px;
 	font-family: 'Titillium Web', sans-serif;
@@ -125,17 +125,17 @@ input[type="text"]:focus {
 
 input:-moz-placeholder,
 textarea:-moz-placeholder {
-  color: #7F8289;
+  color: #B9BDC5;
 }
 
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
-  color: #7F8289;
+  color: #B9BDC5;
 }
 
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
-  color: #7F8289;
+  color: #B9BDC5;
 }
 
 /* ==================================================
@@ -557,6 +557,46 @@ nav#menu #menu-nav li a:hover {
 	color: #DE5E60;
 }
 
+.lang-de{
+	background-image: url(../img/flags/de.png);
+}
+.lang-en{
+	background-image: url(../img/flags/en.png);
+}
+.lang-ko{
+	background-image: url(../img/flags/ko.png);
+}
+
+#home-slider #lang, #no-slider #lang {
+	margin: 0;
+	position: relative;
+	float:right;
+	width: 50px;
+	height: 50px;
+	
+	-webkit-transition: background 0.1s linear 0s;	
+	   -moz-transition: background 0.1s linear 0s;
+		 -o-transition: background 0.1s linear 0s;
+		    transition: background 0.1s linear 0s;
+}
+
+#home-slider #lang:hover, #no-slider #lang:hover {
+	background-color:#DE5E60;
+}
+
+#no-slider .control-nav {
+	width: 100%;
+	background: #2F3238;
+	height: 50px;
+	bottom: 0;
+	z-index: 2;
+}
+
+header #no-slider{
+	margin-left: -20px;
+	margin-right: -20px;
+}
+
 
 /* ==================================================
    Mobile Navigation
@@ -683,7 +723,7 @@ nav#menu #menu-nav li a:hover {
 }
 
 .work-nav #filters li a {
-	color: #7F8289;
+	color: #B9BDC5;
 	font-size: 16px;
 	display: block;	
 }
@@ -1023,7 +1063,7 @@ nav#menu #menu-nav li a:hover {
 }
 
 #ticker .tweet_list .tweet_time a {
-	color: #7f8289;
+	color: #B9BDC5;
 	font-size: 14px;
 	font-style: italic;
 	margin-left: 10px;	
