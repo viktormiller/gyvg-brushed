@@ -2,6 +2,34 @@ jQuery(function($){
 
 var BRUSHED = window.BRUSHED || {};
 
+
+/* ==================================================
+	Countdown
+================================================== */
+/*
+ * author: Viktor Miller
+ * date: 30-07-14
+ */
+
+BRUSHED.countdown = function(){
+var day = 01; //put the date here
+var month = 11; // put the month here
+var mname = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+$('#clock').countdown('2014/'+month+'/'+day+' 18:30:00').on('update.countdown', function(event) {
+	var format = '%-H h %M min %S sec';
+	if(event.offset.days > 0) {
+    format = '%-d day%!d ' + format;
+    }
+    if(event.offset.weeks > 0) {
+    	format = '%-w week%!w ' + format;
+    }
+    $(this).html(event.strftime('Saturday '+mname[month-1]+' '+day+'th, 2014 in<br>'+format));
+}).on('finish.countdown', function(event) {
+	$(this).html('The time and date will be announced!');
+	$(this).parent().addClass('disabled');
+});
+}
+
 /* ==================================================
    Mobile Navigation
 ================================================== */
@@ -493,34 +521,6 @@ BRUSHED.gmap = function(){
 				  //Associate the styled map with the MapTypeId and set it to display.
 				  map.mapTypes.set('map_style', customMap);
 				  map.setMapTypeId('map_style');
-}
-
-
-/* ==================================================
-	Countdown
-================================================== */
-/*
- * author: Viktor Miller
- * date: 30-07-14
- */
-
-BRUSHED.countdown = function(){
-var day = 4; //put the date here
-var month = 10; // put the month here
-var mname = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-$('#clock').countdown('2014/'+month+'/'+day+' 18:30:00').on('update.countdown', function(event) {
-	var format = '%-H h %M min %S sec';
-	if(event.offset.days > 0) {
-    format = '%-d day%!t ' + format;
-    }
-    if(event.offset.weeks > 0) {
-    	format = '%-w week%!W ' + format;
-    }
-    $(this).html(event.strftime('Saturday '+mname[month-1]+' '+day+'th, 2014 in<br>'+format));
-}).on('finish.countdown', function(event) {
-	$(this).html('The time and date will be announced!');
-	$(this).parent().addClass('disabled');
-});
 }
 
 

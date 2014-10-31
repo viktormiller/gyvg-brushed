@@ -2,6 +2,33 @@ jQuery(function($){
 
 var BRUSHED = window.BRUSHED || {};
 
+
+/* ==================================================
+	Countdown
+================================================== */
+/*
+ * author: Viktor Miller
+ * date: 30-07-14
+ */
+
+BRUSHED.countdown = function(){
+var day = 01;
+var month = 11;
+$('#clock').countdown('2014/'+month+'/'+day+' 18:30:00').on('update.countdown', function(event) {
+	var format = '%-H Std. %M Min. %S Sek.';
+	if(event.offset.days > 0) {
+    format = '%-d T. ' + format;
+    }
+    if(event.offset.weeks > 0) {
+    	format = '%-w Wo. ' + format;
+    }
+    $(this).html(event.strftime('Samstag '+day+'.'+month+'.14 in<br>'+format));
+}).on('finish.countdown', function(event) {
+	$(this).html('Das Datum wird in K&uuml;rze bekannt gegeben!');
+	$(this).parent().addClass('disabled');
+});
+}
+
 /* ==================================================
    Mobile Navigation
 ================================================== */
@@ -494,33 +521,6 @@ BRUSHED.gmap = function(){
 				  //Associate the styled map with the MapTypeId and set it to display.
 				  map.mapTypes.set('map_style', customMap);
 				  map.setMapTypeId('map_style');
-}
-
-
-/* ==================================================
-	Countdown
-================================================== */
-/*
- * author: Viktor Miller
- * date: 30-07-14
- */
-
-BRUSHED.countdown = function(){
-var day = 4;
-var month = 10;
-$('#clock').countdown('2014/'+month+'/'+day+' 18:30:00').on('update.countdown', function(event) {
-	var format = '%-H Std. %M Min. %S Sek.';
-	if(event.offset.days > 0) {
-    format = '%-d T. ' + format;
-    }
-    if(event.offset.weeks > 0) {
-    	format = '%-w Wo. ' + format;
-    }
-    $(this).html(event.strftime('Samstag '+day+'.'+month+'.14 in<br>'+format));
-}).on('finish.countdown', function(event) {
-	$(this).html('Das Datum wird in k&uuml;rze bekannt gegeben!');
-	$(this).parent().addClass('disabled');
-});
 }
 
 

@@ -2,6 +2,33 @@ jQuery(function($){
 
 var BRUSHED = window.BRUSHED || {};
 
+
+/* ==================================================
+	Countdown
+================================================== */
+/*
+ * author: Viktor Miller
+ * date: 30-07-14
+ */
+
+BRUSHED.countdown = function(){
+var day = 01;
+var month = 11;
+$('#clock').countdown('2014/'+month+'/'+day+' 18:30:00').on('update.countdown', function(event) {
+	var format = '%-H시 %M분 %S초';
+	if(event.offset.days > 0) {
+    format = '%-d일 ' + format;
+    }
+    if(event.offset.weeks > 0) {
+    	format = '%-w주 ' + format;
+    }
+    $(this).html(event.strftime('토요일 '+month+'월 '+day+'일, 2014 <br>'+format));
+}).on('finish.countdown', function(event) {
+	$(this).html('The time and date will be announced!');
+	$(this).parent().addClass('disabled');
+});
+}
+
 /* ==================================================
    Mobile Navigation
 ================================================== */
@@ -493,33 +520,6 @@ BRUSHED.gmap = function(){
 				  //Associate the styled map with the MapTypeId and set it to display.
 				  map.mapTypes.set('map_style', customMap);
 				  map.setMapTypeId('map_style');
-}
-
-
-/* ==================================================
-	Countdown
-================================================== */
-/*
- * author: Viktor Miller
- * date: 30-07-14
- */
-
-BRUSHED.countdown = function(){
-var day = 4;
-var month = 10;
-$('#clock').countdown('2014/'+month+'/'+day+' 18:30:00').on('update.countdown', function(event) {
-	var format = '%-H시 %M분 %S초';
-	if(event.offset.days > 0) {
-    format = '%-d일 ' + format;
-    }
-    if(event.offset.weeks > 0) {
-    	format = '%-w week%!w ' + format;
-    }
-    $(this).html(event.strftime('토요일 '+month+'월 '+day+'일, 2014 <br>'+format));
-}).on('finish.countdown', function(event) {
-	$(this).html('The time and date will be announced!');
-	$(this).parent().addClass('disabled');
-});
 }
 
 
