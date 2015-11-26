@@ -1,7 +1,28 @@
+/*
+ * author: Viktor Miller
+ * last update: 23-06-15
+ *
+ */
 jQuery(function($){
 
 var BRUSHED = window.BRUSHED || {};
 
+var en = false;
+var ko = false;
+var include = '_include';
+var imageTxt = 'Lern uns kennen!';
+
+var language = window.location.href;
+
+if(language.indexOf('http://gyvg.de/en/') !== -1){
+	en = true;
+	var include = '../_include'
+	var imageTxt = 'Get to know us!';
+} else if (language.indexOf('http://gyvg.de/ko/') !== -1){
+	ko = true;
+	var include = '../_include';
+	var imageTxt = '우리 만나요!';	
+}
 
 /* ==================================================
 	Countdown
@@ -9,25 +30,192 @@ var BRUSHED = window.BRUSHED || {};
 /*
  * author: Viktor Miller
  * date: 30-07-14
+ * last update: 25-08-15
  */
 
 BRUSHED.countdown = function(){
-var day = 01;
-var month = 11;
-$('#clock').countdown('2014/'+month+'/'+day+' 18:30:00').on('update.countdown', function(event) {
-	var format = '%-H Std. %M Min. %S Sek.';
-	if(event.offset.days > 0) {
-    format = '%-d T. ' + format;
-    }
-    if(event.offset.weeks > 0) {
-    	format = '%-w Wo. ' + format;
-    }
-    $(this).html(event.strftime('Samstag '+day+'.'+month+'.14 in<br>'+format));
-}).on('finish.countdown', function(event) {
-	$(this).html('Das Datum wird in K&uuml;rze bekannt gegeben!');
-	$(this).parent().addClass('disabled');
-});
+
+$.ajax({
+   url: include+"/php/call.php",
+   dataType: 'json'
+}).done(
+	function(data){
+		var meetingDate = data[0];
+		//console.log("Meeting Date " +meetingDate);
+		
+		/*
+			TESTE die Monate 0,...,11
+			month = 8;
+			day = 1;
+		*/	
+		var dat = new Date(); 
+		var day = dat.getDate();
+		var month = dat.getMonth();
+		var year = dat.getFullYear();
+		/*****************************************
+		* Zeige den nächsten Termin im neuen Monat
+		* 7 Tage vor Beginn des neuen Monats an
+		******************************************/
+		var nextMonth = new Date(year,month+1,1);
+		var sevenDaysBefore = new Date(nextMonth.setDate(nextMonth.getDate()-7));
+		//console.log(sevenDaysBefore<dat);
+		if (sevenDaysBefore<dat){
+			month = month+1;
+			day = 1;
+		}
+		/******************ENDE*******************/
+		var date = getFirstMeeting(year,month);
+		var d = date.getDate();
+		var m = date.getMonth()+1;
+		var y = date.getFullYear();
+		/******************************************
+		* Falls der aktuelle Tag größer als der Tag
+		* vom ersten Samstag im Monat ist wähle den
+		* Tag vom vierten Samstag im Monat aus
+		******************************************/
+		if(day>d){
+			date = getSecondMeeting(year,month);
+			d = date.getDate();
+			m = date.getMonth()+1;
+			y = date.getFullYear();
+		}
+		/******************ENDE*******************/
+		/*
+			console.log("Aktueller Tag: "+day);
+			console.log("Erster Samstag im Monat: "+d);
+			console.log(day>d);
+		*/
+
+		/******************************************
+		* LANGUAGE
+		******************************************/
+		var formatTxt = '%-H Std. %M Min. %S Sek.';
+		var formatDay = '%-d T. ';
+		var formatWk = '%-w Wo. ';
+		var todayTxt = 'Heute, den <strong>'+d+'.'+m+'.'+y+'</strong>, um <strong>18:30 Uhr</strong> in<br>';
+		var futureTxt = 'Samstag, den <strong>'+d+'.'+m+'.'+y+'</strong>, um <strong>18:30 Uhr</strong> in<br>';
+		var soonTxt = 'Das Datum wird in K&uuml;rze bekannt gegeben!';
+
+		if(en){
+			var formatTxt = '%-H h %M min %S sec';
+			var formatDay = '%-d day%!d ';
+			var formatWk = '%-w week%!w ';
+			var mname = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+			var todayTxt = 'Today <strong>'+mname[m-1]+' '+d+'th</strong>, '+y+' in<br>';
+			var futureTxt = 'Saturday <strong>'+mname[m-1]+' '+d+'th, '+y+', 6:30pm</strong> in<br>';
+			var soonTxt = 'The time and date will be announced!';
+		} else if (ko){
+			var formatTxt = '%-H시 %M분 %S초';
+			var formatDay = '%-d일 ';
+			var formatWk = '%-w주 ';
+			var todayTxt = '오늘 <strong>'+m+'월 '+d+'일, '+y+'</strong> <br>';
+			var futureTxt = '토요일 <strong>'+m+'월 '+d+'일, '+y+'</strong> <br>';
+			var soonTxt = 'The time and date will be announced!';
+		}
+		/******************ENDE*******************/
+
+		/******************************************
+		* Naechstes Treffen entfaellt
+		******************************************/
+		/* $.getJSON(include+"/php/call.php", function(jsonData) {
+		   meeingDate = jsonData[0];
+		   for (var x = 0; x < jsonData.length; x++) {
+				console.log(jsonData[x]);
+		   }
+		}); */
+
+		var dEnd = new Date(meetingDate);
+		var today = new Date();
+		/* console.log(dEnd);
+		console.log(date);
+		console.log(dEnd.getDate()===date.getDate()); */
+		if(dEnd.getDate()===date.getDate())			
+			if(today<date){
+				return $('#clock').html('<p>Unser nächstes Treffen am <strong>'+d+'.'+m+'.'+y+'</strong> entfällt.</p><p>Next meeting is cancelled.</p>');
+		}
+		
+		/******************ENDE*******************/
+		$('#clock').countdown(y+'/'+m+'/'+d+' 18:30:00').on('update.countdown', function(event) {
+			var format = formatTxt;
+			if(event.offset.days > 0) {
+			format = formatDay + format;
+			}
+			if(event.offset.weeks > 0) {
+				format = formatWk + format;
+			}
+			if(day==d)
+				$(this).html(event.strftime(todayTxt+format));
+			else
+				$(this).html(event.strftime(futureTxt+format));
+		}).on('finish.countdown', function(event) {	
+			$(this).html(soonTxt);
+			$(this).parent().addClass('disabled');
+		});
+		
+   }
+);
+
+/* var dEnd = new Date('2015-08-15');
+var today = new Date();
+console.log("Vergleich " +today);
+if(today<dEnd){
+	return $('#clock').html('<p class="exp-2015-08-17">Aufgrund unserer Visionsreise entfällt unser nächstes Treffen</p><p>Next meeting is cancelled.</p>');
+} */
+
 }
+
+var getFirstMeeting = function(year, month){
+    var date = new Date(year, month, 1, 0, 0, 0, 0);
+    date.setDate(14-date.getDay());
+    return date;
+};
+
+var getSecondMeeting = function(year, month){
+    var date = new Date(year, month, 1, 0, 0, 0, 0);
+    date.setDate(28-date.getDay());	
+    return date;
+};
+
+/* ==================================================
+   Content Expirator
+================================================== */
+/*
+ * Title: Content Expirator
+ * Author: DansNetwork.com
+ * URL: http://dansnetwork.com/content-expirator-jquery-content-expiration-plugin/
+ * Version: 0.1.0
+ * Requirements: jQuery 1.4 or higher (will probably work with previous versions)
+ * 
+ * HOW TO USE: class="exp-2015-06-28" or class="show-2015-06-28"
+ * 
+ */
+
+BRUSHED.contentExp = function(prfx){
+		var pfix = prfx || 'exp';
+        $("[class|="+pfix+"]").each(function(){
+            var eString = $(this).attr('class').split(' ')[0];
+            var dString = eString.split('-');
+            var d = new Date(dString[1],dString[2].toString()-1,dString[3]);
+            var today = new Date();
+			if(d < today){
+				$(this).hide();
+			}
+		});
+	}
+	
+BRUSHED.contentShw = function(prfx){
+		var pfix = prfx || 'show';
+        $("[class|="+pfix+"]").each(function(){
+			$(this).hide();			
+            var eString = $(this).attr('class').split(' ')[0];
+            var dString = eString.split('-');
+            var d = new Date(dString[1],dString[2].toString()-1,dString[3]);
+            var today = new Date();
+			if(d <= today){
+				$(this).show();
+			}
+		});
+	}
 
 /* ==================================================
    Mobile Navigation
@@ -104,10 +292,10 @@ BRUSHED.slider = function(){
 		thumb_links				:	0,			// Individual thumb links for each slide
 		thumbnail_navigation    :   0,			// Thumbnail navigation
 		slides 					:  	[			// Slideshow Images
-											{image : '_include/img/slider-images/image01.jpg', title : '<div class="slide-content">&nbsp</div>', thumb : '', url : ''},
-											{image : '_include/img/slider-images/image02.jpg', title : '<div class="slide-content">Lern uns kennen!</div>', thumb : '', url : ''}/* ,
-											{image : '_include/img/slider-images/image03.jpg', title : '<div class="slide-content">We are <br> passionate for <br> Jesus</div>', thumb : '', url : ''},
-											{image : '_include/img/slider-images/image04.jpg', title : '<div class="slide-content">Traveling the world!</div>', thumb : '', url : ''}   */
+											{image : include+'/img/slider-images/image01.jpg', title : '<div class="slide-content">&nbsp</div>', thumb : '', url : ''},
+											{image : include+'/img/slider-images/image02.jpg', title : '<div class="slide-content">'+imageTxt+'</div>', thumb : '', url : ''}/* ,
+											{image : include+'/img/slider-images/image03.jpg', title : '<div class="slide-content">We are <br> passionate for <br> Jesus</div>', thumb : '', url : ''},
+											{image : include+'/img/slider-images/image04.jpg', title : '<div class="slide-content">Traveling the world!</div>', thumb : '', url : ''}   */
 									],
 									
 		// Theme Options			   
@@ -222,7 +410,7 @@ BRUSHED.contactForm = function(){
 		
 		$.ajax({
 			type: "POST",
-			url: "_include/php/contact.php",
+			url: include+"/php/contact.php",
 			data: fields,
 			dataType: 'json',
 			success: function(response) {
@@ -249,7 +437,7 @@ BRUSHED.tweetFeed = function(){
 	var valueTop = -64; // Margin Top Value
 	
     $("#ticker").tweet({
-          modpath: '_include/js/twitter/',
+          modpath: include+'/js/twitter/',
           username: "Bluxart", // Change this with YOUR ID
           page: 1,
           avatar_size: 0,
@@ -515,51 +703,12 @@ BRUSHED.gmap = function(){
 				  marker = new google.maps.Marker({
 					position: myLatlng,
 					map: map/*,
-					icon: "_include/img/marker.png"*/
+					icon: include+"/img/marker.png"*/
 				  });
 			
 				  //Associate the styled map with the MapTypeId and set it to display.
 				  map.mapTypes.set('map_style', customMap);
 				  map.setMapTypeId('map_style');
-}
-
-
-/* ==================================================
-	Appear
-================================================== */
-/*
- * author: Viktor Miller
- * date: 01-10-2014
- * comment: to use this script 2 files are needed
- * the js and css file.
- */
-
-BRUSHED.appear = function(){
-if( $("html").hasClass("oldie") || $("html").hasClass("mobile") ) {
-	return false;
-}
-
-$("[data-appear-animation]").each(function() {
-	var self = $(this);
-	self.addClass("appear-animation");
-		if( $(window).width() > 959 ) {
-			self.appear(function() {
-				var delay = (self.attr("data-appear-animation-delay") ? self.attr("data-appear-animation-delay") : 0);
-				self.css("animation-delay", delay + "s");
-				var animation = self.attr("data-appear-animation");
-				self.addClass( animation );
-				setTimeout(function() {
-					if( animation == 'animateWidth' ) {
-						self.css('width', self.attr("data-width"));
-					}
-					self.addClass("animated").addClass("animation-finished");
-				}, delay);
-			}, {accX: 0, accY: -50});
-		} else {
-			self.addClass("animated").addClass("animation-finished");
-			self.css('width', self.attr("data-width"));
-		}
-});
 }
 
 
@@ -571,15 +720,15 @@ $(document).ready(function(){
 	Modernizr.load([
 	{
 		test: Modernizr.placeholder,
-		nope: '_include/js/placeholder.js', 
+		nope: include+'/js/placeholder.js', 
 		complete : function() {
 				if (!Modernizr.placeholder) {
-						Placeholders.init({
+						/* Placeholders.init({
 						live: true,
 						hideOnFocus: false,
 						className: "yourClass",
 						textColor: "#999"
-						});    
+						});  */   
 				}
 		}
 	}
@@ -600,8 +749,9 @@ $(document).ready(function(){
 		BRUSHED.slider();
     }
 	
-	BRUSHED.appear();
 	BRUSHED.nav();
+	BRUSHED.contentExp();
+	BRUSHED.contentShw();
 	BRUSHED.mobileNav();
 	BRUSHED.listenerMenu();
 	BRUSHED.menu();

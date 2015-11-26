@@ -1094,8 +1094,8 @@ transition: all 0.4s ease-in-out;
    Countdown *VM-30.07.14
 ================================================== */
 
-#clock{
-	font-weight: 700;
+#countdown{
+	/* font-weight: 700; */
 	font-size: 24px;
 }
 
