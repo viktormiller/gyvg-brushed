@@ -39,52 +39,64 @@ $.ajax({
    url: include+"/php/call.php",
    dataType: 'json'
 }).done(
-	function(data){
-		var meetingDate = data[0];
-		//console.log("Meeting Date " +meetingDate);
-		
+	function(data){		
 		/*
 			TESTE die Monate 0,...,11
 			month = 8;
 			day = 1;
 		*/	
-		var dat = new Date(); 
-		var day = dat.getDate();
-		var month = dat.getMonth();
-		var year = dat.getFullYear();
+		var today = new Date(); 
+		var day = today.getDate();
+		var month = today.getMonth();
+		var year = today.getFullYear();
 		/*****************************************
 		* Zeige den nächsten Termin im neuen Monat
 		* 7 Tage vor Beginn des neuen Monats an
 		******************************************/
 		var nextMonth = new Date(year,month+1,1);
 		var sevenDaysBefore = new Date(nextMonth.setDate(nextMonth.getDate()-7));
-		//console.log(sevenDaysBefore<dat);
-		if (sevenDaysBefore<dat){
+		//console.log(sevenDaysBefore<today);
+		if (sevenDaysBefore<today){
 			month = month+1;
 			day = 1;
 		}
 		/******************ENDE*******************/
-		var date = getFirstMeeting(year,month);
-		var d = date.getDate();
-		var m = date.getMonth()+1;
-		var y = date.getFullYear();
+		var meetingDate = getFirstMeeting(year,month);
+		var d = meetingDate.getDate();
+		var m = meetingDate.getMonth()+1;
+		var y = meetingDate.getFullYear();
 		/******************************************
 		* Falls der aktuelle Tag größer als der Tag
 		* vom ersten Samstag im Monat ist wähle den
 		* Tag vom vierten Samstag im Monat aus
 		******************************************/
 		if(day>d){
-			date = getSecondMeeting(year,month);
-			d = date.getDate();
-			m = date.getMonth()+1;
-			y = date.getFullYear();
+			meetingDate = getSecondMeeting(year,month);
+			d = meetingDate.getDate();
+			m = meetingDate.getMonth()+1;
+			y = meetingDate.getFullYear();
+		}
+
+		/******************************************
+		* 
+		* Treffen aendern
+		*
+		******************************************/
+
+		var changedMeeting = data[0][1]; //next meeting date
+		var changedDate = new Date(changedMeeting);
+
+		//Compare changed Date with the real next meeting date
+		if(today<changedDate){
+			if (changedDate.getDate()<meetingDate.getDate()){
+				console.log(changedDate.getDate()<meetingDate.getDate());
+				meetingDate=changedDate;
+				d = meetingDate.getDate();
+				m = meetingDate.getMonth()+1;
+				y = meetingDate.getFullYear();
+			}
 		}
 		/******************ENDE*******************/
-		/*
-			console.log("Aktueller Tag: "+day);
-			console.log("Erster Samstag im Monat: "+d);
-			console.log(day>d);
-		*/
 
 		/******************************************
 		* LANGUAGE
@@ -115,8 +127,11 @@ $.ajax({
 		/******************ENDE*******************/
 
 		/******************************************
+		* 
 		* Naechstes Treffen entfaellt
+		*
 		******************************************/
+		
 		/* $.getJSON(include+"/php/call.php", function(jsonData) {
 		   meeingDate = jsonData[0];
 		   for (var x = 0; x < jsonData.length; x++) {
@@ -124,14 +139,19 @@ $.ajax({
 		   }
 		}); */
 
-		var dEnd = new Date(meetingDate);
-		var today = new Date();
-		/* console.log(dEnd);
-		console.log(date);
-		console.log(dEnd.getDate()===date.getDate()); */
-		if(dEnd.getDate()===date.getDate())			
-			if(today<date){
+		var skippedMeeting = data[0][0]; //skipped date
+		//console.log("skippedMeeting data[0][0] "+skippedMeeting+"\nnextMeeting data[0][1] "+changedMeeting);
+
+		var skippedDate = new Date(skippedMeeting);
+		console.log("skippedDate: "+skippedDate);
+		console.log("meetingDate: "+meetingDate);
+		console.log("changedDate: "+changedDate);
+		console.log(skippedDate.getDate()===meetingDate.getDate());
+
+		if(skippedDate.getDate()===meetingDate.getDate()){
+			if(today<meetingDate){
 				return $('#clock').html('<p>Unser nächstes Treffen am <strong>'+d+'.'+m+'.'+y+'</strong> entfällt.</p><p>Next meeting is cancelled.</p>');
+			}
 		}
 		
 		/******************ENDE*******************/
@@ -155,25 +175,25 @@ $.ajax({
    }
 );
 
-/* var dEnd = new Date('2015-08-15');
+/* var skippedDate = new Date('2015-08-15');
 var today = new Date();
 console.log("Vergleich " +today);
-if(today<dEnd){
+if(today<skippedDate){
 	return $('#clock').html('<p class="exp-2015-08-17">Aufgrund unserer Visionsreise entfällt unser nächstes Treffen</p><p>Next meeting is cancelled.</p>');
 } */
 
 }
 
 var getFirstMeeting = function(year, month){
-    var date = new Date(year, month, 1, 0, 0, 0, 0);
-    date.setDate(14-date.getDay());
-    return date;
+    var meetingDate = new Date(year, month, 1, 0, 0, 0, 0);
+    meetingDate.setDate(14-meetingDate.getDay());
+    return meetingDate;
 };
 
 var getSecondMeeting = function(year, month){
-    var date = new Date(year, month, 1, 0, 0, 0, 0);
-    date.setDate(28-date.getDay());	
-    return date;
+    var meetingDate = new Date(year, month, 1, 0, 0, 0, 0);
+    meetingDate.setDate(28-meetingDate.getDay());	
+    return meetingDate;
 };
 
 /* ==================================================
