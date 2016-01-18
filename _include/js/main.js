@@ -185,13 +185,13 @@ if(today<skippedDate){
 
 var getFirstMeeting = function(year, month){
     var meetingDate = new Date(year, month, 1, 0, 0, 0, 0);
-    meetingDate.setDate(14-meetingDate.getDay());
+    meetingDate.setDate(7-meetingDate.getDay());
     return meetingDate;
 };
 
 var getSecondMeeting = function(year, month){
     var meetingDate = new Date(year, month, 1, 0, 0, 0, 0);
-    meetingDate.setDate(28-meetingDate.getDay());
+    meetingDate.setDate(21-meetingDate.getDay());
     return meetingDate;
 };
 
