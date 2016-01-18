@@ -21,7 +21,7 @@ if(language.indexOf('http://gyvg.de/en/') !== -1){
 } else if (language.indexOf('http://gyvg.de/ko/') !== -1){
 	ko = true;
 	var include = '../_include';
-	var imageTxt = '우리 만나요!';	
+	var imageTxt = '우리 만나요!';
 }
 
 /* ==================================================
@@ -39,13 +39,13 @@ $.ajax({
    url: include+"/php/call.php",
    dataType: 'json'
 }).done(
-	function(data){		
+	function(data){
 		/*
 			TESTE die Monate 0,...,11
 			month = 8;
 			day = 1;
-		*/	
-		var today = new Date(); 
+		*/
+		var today = new Date();
 		var day = today.getDate();
 		var month = today.getMonth();
 		var year = today.getFullYear();
@@ -78,23 +78,51 @@ $.ajax({
 		}
 
 		/******************************************
-		* 
+		*
+		* Naechstes Treffen entfaellt
+		*
+		******************************************/
+
+		/* $.getJSON(include+"/php/call.php", function(jsonData) {
+		   meeingDate = jsonData[0];
+		   for (var x = 0; x < jsonData.length; x++) {
+				console.log(jsonData[x]);
+		   }
+		}); */
+
+		var skippedMeeting = data[0][0]; //skipped date
+		var skippedDate = new Date(skippedMeeting);
+		var changedMeeting = data[0][1]; //next meeting date
+		var changedDate = new Date(changedMeeting);
+
+		/*console.log("skippedDate: "+skippedDate);
+		console.log("meetingDate: "+meetingDate);
+		console.log("changedDate: "+changedDate);
+		console.log(skippedDate.getDate()===meetingDate.getDate());*/
+
+		if(skippedDate.getDate()===meetingDate.getDate()){
+			if(today<meetingDate){
+				return $('#clock').html('<p>Unser nächstes Treffen am <strong>'+d+'.'+m+'.'+y+'</strong> entfällt.</p><p>Next meeting is cancelled.</p>');
+			}
+		}
+
+		/******************ENDE*******************/
+
+		/******************************************
+		*
 		* Treffen aendern
 		*
 		******************************************/
 
-		var changedMeeting = data[0][1]; //next meeting date
-		var changedDate = new Date(changedMeeting);
-
 		//Compare changed Date with the real next meeting date
-		if(today<changedDate){
-			if (changedDate.getDate()<meetingDate.getDate()){
-				console.log(changedDate.getDate()<meetingDate.getDate());
-				meetingDate=changedDate;
-				d = meetingDate.getDate();
-				m = meetingDate.getMonth()+1;
-				y = meetingDate.getFullYear();
-			}
+		if(today.getDate()<changedDate.getDate()){
+				if (changedDate.getDate()<meetingDate.getDate()){
+					console.log(changedDate.getDate()<meetingDate.getDate());
+					meetingDate=changedDate;
+					d = meetingDate.getDate();
+					m = meetingDate.getMonth()+1;
+					y = meetingDate.getFullYear();
+				}
 		}
 		/******************ENDE*******************/
 
@@ -126,35 +154,6 @@ $.ajax({
 		}
 		/******************ENDE*******************/
 
-		/******************************************
-		* 
-		* Naechstes Treffen entfaellt
-		*
-		******************************************/
-		
-		/* $.getJSON(include+"/php/call.php", function(jsonData) {
-		   meeingDate = jsonData[0];
-		   for (var x = 0; x < jsonData.length; x++) {
-				console.log(jsonData[x]);
-		   }
-		}); */
-
-		var skippedMeeting = data[0][0]; //skipped date
-		//console.log("skippedMeeting data[0][0] "+skippedMeeting+"\nnextMeeting data[0][1] "+changedMeeting);
-
-		var skippedDate = new Date(skippedMeeting);
-		console.log("skippedDate: "+skippedDate);
-		console.log("meetingDate: "+meetingDate);
-		console.log("changedDate: "+changedDate);
-		console.log(skippedDate.getDate()===meetingDate.getDate());
-
-		if(skippedDate.getDate()===meetingDate.getDate()){
-			if(today<meetingDate){
-				return $('#clock').html('<p>Unser nächstes Treffen am <strong>'+d+'.'+m+'.'+y+'</strong> entfällt.</p><p>Next meeting is cancelled.</p>');
-			}
-		}
-		
-		/******************ENDE*******************/
 		$('#clock').countdown(y+'/'+m+'/'+d+' 18:30:00').on('update.countdown', function(event) {
 			var format = formatTxt;
 			if(event.offset.days > 0) {
@@ -167,11 +166,11 @@ $.ajax({
 				$(this).html(event.strftime(todayTxt+format));
 			else
 				$(this).html(event.strftime(futureTxt+format));
-		}).on('finish.countdown', function(event) {	
+		}).on('finish.countdown', function(event) {
 			$(this).html(soonTxt);
 			$(this).parent().addClass('disabled');
 		});
-		
+
    }
 );
 
@@ -192,7 +191,7 @@ var getFirstMeeting = function(year, month){
 
 var getSecondMeeting = function(year, month){
     var meetingDate = new Date(year, month, 1, 0, 0, 0, 0);
-    meetingDate.setDate(28-meetingDate.getDay());	
+    meetingDate.setDate(28-meetingDate.getDay());
     return meetingDate;
 };
 
@@ -205,9 +204,9 @@ var getSecondMeeting = function(year, month){
  * URL: http://dansnetwork.com/content-expirator-jquery-content-expiration-plugin/
  * Version: 0.1.0
  * Requirements: jQuery 1.4 or higher (will probably work with previous versions)
- * 
+ *
  * HOW TO USE: class="exp-2015-06-28" or class="show-2015-06-28"
- * 
+ *
  */
 
 BRUSHED.contentExp = function(prfx){
@@ -222,11 +221,11 @@ BRUSHED.contentExp = function(prfx){
 			}
 		});
 	}
-	
+
 BRUSHED.contentShw = function(prfx){
 		var pfix = prfx || 'show';
         $("[class|="+pfix+"]").each(function(){
-			$(this).hide();			
+			$(this).hide();
             var eString = $(this).attr('class').split(' ')[0];
             var dString = eString.split('-');
             var d = new Date(dString[1],dString[2].toString()-1,dString[3]);
@@ -244,7 +243,7 @@ var mobileMenuClone = $('#menu').clone().attr('id', 'navigation-mobile');
 
 BRUSHED.mobileNav = function(){
 	var windowWidth = $(window).width();
-	
+
 	if( windowWidth <= 979 ) {
 		if( $('#mobile-nav').length > 0 ) {
 			mobileMenuClone.insertAfter('#menu');
@@ -253,7 +252,7 @@ BRUSHED.mobileNav = function(){
 	} else {
 		$('#navigation-mobile').css('display', 'none');
 		if ($('#mobile-nav').hasClass('open')) {
-			$('#mobile-nav').removeClass('open');	
+			$('#mobile-nav').removeClass('open');
 		}
 	}
 }
@@ -261,7 +260,7 @@ BRUSHED.mobileNav = function(){
 BRUSHED.listenerMenu = function(){
 	$('#mobile-nav').on('click', function(e){
 		$(this).toggleClass('open');
-		
+
 		if ($('#mobile-nav').hasClass('open')) {
 			$('#navigation-mobile').slideDown(500, 'easeOutExpo');
 		} else {
@@ -269,7 +268,7 @@ BRUSHED.listenerMenu = function(){
 		}
 		e.preventDefault();
 	});
-	
+
 	$('#menu-nav-mobile a').on('click', function(){
 		$('#mobile-nav').removeClass('open');
 		$('#navigation-mobile').slideUp(350, 'easeOutExpo');
@@ -297,8 +296,8 @@ BRUSHED.slider = function(){
 		keyboard_nav            :   1,			// Keyboard navigation on/off
 		performance				:	0,			// 0-Normal, 1-Hybrid speed/quality, 2-Optimizes image quality, 3-Optimizes transition speed // (Only works for Firefox/IE, not Webkit)
 		image_protect			:	1,			// Disables image dragging and right click with Javascript
-												   
-		// Size & Position						   
+
+		// Size & Position
 		min_width		        :   0,			// Min width allowed (in pixels)
 		min_height		        :   0,			// Min height allowed (in pixels)
 		vertical_center         :   1,			// Vertically center background
@@ -306,8 +305,8 @@ BRUSHED.slider = function(){
 		fit_always				:	0,			// Image will never exceed browser width or height (Ignores min. dimensions)
 		fit_portrait         	:   1,			// Portrait images will not exceed browser height
 		fit_landscape			:   0,			// Landscape images will not exceed browser width
-												   
-		// Components							
+
+		// Components
 		slide_links				:	'blank',	// Individual links for each slide (Options: false, 'num', 'name', 'blank')
 		thumb_links				:	0,			// Individual thumb links for each slide
 		thumbnail_navigation    :   0,			// Thumbnail navigation
@@ -317,11 +316,11 @@ BRUSHED.slider = function(){
 											{image : include+'/img/slider-images/image03.jpg', title : '<div class="slide-content">We are <br> passionate for <br> Jesus</div>', thumb : '', url : ''},
 											{image : include+'/img/slider-images/image04.jpg', title : '<div class="slide-content">Traveling the world!</div>', thumb : '', url : ''}   */
 									],
-									
-		// Theme Options			   
-		progress_bar			:	0,			// Timer for each slide							
+
+		// Theme Options
+		progress_bar			:	0,			// Timer for each slide
 		mouse_scrub				:	0
-		
+
 	});
 
 }
@@ -341,9 +340,9 @@ BRUSHED.nav = function(){
 ================================================== */
 
 BRUSHED.filter = function (){
-	if($('#projects').length > 0){		
+	if($('#projects').length > 0){
 		var $container = $('#projects');
-		
+
 		$container.imagesLoaded(function() {
 			$container.isotope({
 			  // options
@@ -352,12 +351,12 @@ BRUSHED.filter = function (){
 			  layoutMode : 'fitRows'
 			});
 		});
-	
-		
+
+
 		// filter items when filter link is clicked
 		var $optionSets = $('#options .option-set'),
 			$optionLinks = $optionSets.find('a');
-	
+
 		  $optionLinks.click(function(){
 			var $this = $(this);
 			// don't proceed if already selected
@@ -367,7 +366,7 @@ BRUSHED.filter = function (){
 			var $optionSet = $this.parents('.option-set');
 			$optionSet.find('.selected').removeClass('selected');
 			$this.addClass('selected');
-	  
+
 			// make option object dynamically, i.e. { filter: '.my-filter-class' }
 			var options = {},
 				key = $optionSet.attr('data-option-key'),
@@ -382,7 +381,7 @@ BRUSHED.filter = function (){
 			  // otherwise, apply new options
 			  $container.isotope( options );
 			}
-			
+
 			return false;
 		});
 	}
@@ -395,8 +394,8 @@ BRUSHED.filter = function (){
 
 BRUSHED.fancyBox = function(){
 	if($('.fancybox').length > 0 || $('.fancybox-media').length > 0 || $('.fancybox-various').length > 0){
-		
-		$(".fancybox").fancybox({				
+
+		$(".fancybox").fancybox({
 				padding : 0,
 				beforeShow: function () {
 					this.title = $(this.element).attr('title');
@@ -406,7 +405,7 @@ BRUSHED.fancyBox = function(){
 					title : { type: 'inside' },
 				}
 			});
-			
+
 		$('.fancybox-media').fancybox({
 			openEffect  : 'none',
 			closeEffect : 'none',
@@ -425,21 +424,21 @@ BRUSHED.fancyBox = function(){
 BRUSHED.contactForm = function(){
 	$("#contact-submit").on('click',function() {
 		$contact_form = $('#contact-form');
-		
+
 		var fields = $contact_form.serialize();
-		
+
 		$.ajax({
 			type: "POST",
 			url: include+"/php/contact.php",
 			data: fields,
 			dataType: 'json',
 			success: function(response) {
-				
+
 				if(response.status){
 					$('#contact-form input').val('');
 					$('#contact-form textarea').val('');
 				}
-				
+
 				$('#response').empty().html(response.html);
 			}
 		});
@@ -453,9 +452,9 @@ BRUSHED.contactForm = function(){
 ================================================== */
 
 BRUSHED.tweetFeed = function(){
-	
+
 	var valueTop = -64; // Margin Top Value
-	
+
     $("#ticker").tweet({
           modpath: include+'/js/twitter/',
           username: "Bluxart", // Change this with YOUR ID
@@ -471,13 +470,13 @@ BRUSHED.tweetFeed = function(){
 		setTimeout(function() {
 			ul.find('li:first').animate( {marginTop: valueTop + 'px'}, 500, 'linear', function() {
 				$(this).detach().appendTo(ul).removeAttr('style');
-			});	
+			});
 		  ticker();
 		}, 5000);
 	  };
 	  ticker();
 	});
-	
+
 }
 
 
@@ -503,11 +502,11 @@ BRUSHED.menu = function(){
 
 BRUSHED.goSectionNext = function(){
 	$('* #smscroll').on('click', function(){
-	
+
 		$target = $($(this).attr('href')).offset().top-130;
-		
+
 		$('body, html').animate({scrollTop : $target}, 750, 'easeOutExpo');
-		
+
 		/* TODO
 		 * by clicking the link the active state is not reseted and the box stays red.
 		 */
@@ -534,7 +533,7 @@ BRUSHED.goSectionNext = function(){
 BRUSHED.goSection = function(){
 	$('#nextsection').on('click', function(){
 		$target = $($(this).attr('href')).offset().top-30;
-		
+
 		$('body, html').animate({scrollTop : $target}, 750, 'easeOutExpo');
 		return false;
 	});
@@ -547,7 +546,7 @@ BRUSHED.goSection = function(){
 BRUSHED.goUp = function(){
 	$('#goUp').on('click', function(){
 		$target = $($(this).attr('href')).offset().top-30;
-		
+
 		$('body, html').animate({scrollTop : $target}, 750, 'easeOutExpo');
 		return false;
 	});
@@ -591,22 +590,22 @@ BRUSHED.scrollToTop = function(){
 ================================================== */
 
 BRUSHED.utils = function(){
-	
+
 	$('.item-thumbs').bind('touchstart', function(){
 		$(".active").removeClass("active");
       	$(this).addClass('active');
     });
-	
+
 	$('.image-wrap').bind('touchstart', function(){
 		$(".active").removeClass("active");
       	$(this).addClass('active');
     });
-	
+
 	$('#social ul li').bind('touchstart', function(){
 		$(".active").removeClass("active");
       	$(this).addClass('active');
     });
-	
+
 }
 
 /* ==================================================
@@ -615,15 +614,15 @@ BRUSHED.utils = function(){
 
 BRUSHED.accordion = function(){
 	var accordion_trigger = $('.accordion-heading.accordionize');
-	
+
 	accordion_trigger.delegate('.accordion-toggle','click', function(event){
 		if($(this).hasClass('active')){
 			$(this).removeClass('active');
 		   	$(this).addClass('inactive');
 		}
 		else{
-		  	accordion_trigger.find('.active').addClass('inactive');          
-		  	accordion_trigger.find('.active').removeClass('active');   
+		  	accordion_trigger.find('.active').addClass('inactive');
+		  	accordion_trigger.find('.active').removeClass('active');
 		  	$(this).removeClass('inactive');
 		  	$(this).addClass('active');
 	 	}
@@ -637,7 +636,7 @@ BRUSHED.accordion = function(){
 
 BRUSHED.toggle = function(){
 	var accordion_trigger_toggle = $('.accordion-heading.togglize');
-	
+
 	accordion_trigger_toggle.delegate('.accordion-toggle','click', function(event){
 		if($(this).hasClass('active')){
 			$(this).removeClass('active');
@@ -655,7 +654,7 @@ BRUSHED.toggle = function(){
    Tooltip
 ================================================== */
 
-BRUSHED.toolTip = function(){ 
+BRUSHED.toolTip = function(){
     $('a[data-toggle=tooltip]').tooltip();
 }
 
@@ -664,22 +663,22 @@ BRUSHED.toolTip = function(){
 	Popover
 ================================================== */
 
-BRUSHED.popOver = function(){ 
-    $('a[data-toggle=popover]').popover();	
+BRUSHED.popOver = function(){
+    $('a[data-toggle=popover]').popover();
 }
 
 
 /* ==================================================
 	Google Map Location *VM-29.07.14
 ================================================== */
-	
-BRUSHED.gmap = function(){ 
+
+BRUSHED.gmap = function(){
 	// Create an array of styles.
 	var styles = [
 					{
 						stylers: [
 							{ saturation: -300 }
-							
+
 						]
 					},{
 						featureType: 'road',
@@ -696,16 +695,16 @@ BRUSHED.gmap = function(){
 						]
 					}
 				  ],
-					
+
 					// Lagitute and longitude for your location goes here
 				   lat = 50.058478,
 				   lng =  8.222245,
-			
+
 				  // Create a new StyledMapType object, passing it the array of styles,
 				  // as well as the name to be displayed on the map type control.
 				  customMap = new google.maps.StyledMapType(styles,
 					  {name: 'Styled Map'}),
-			
+
 				// Create a map object, and include the MapTypeId to add
 				// to the map type control.
 				  mapOptions = {
@@ -714,7 +713,7 @@ BRUSHED.gmap = function(){
 					  center: new google.maps.LatLng( lat, lng ),
 					  mapTypeControlOptions: {
 						  mapTypeIds: [google.maps.MapTypeId.ROADMAP],
-						
+
 					  }
 				  },
 				  map = new google.maps.Map(document.getElementById('map'), mapOptions),
@@ -725,7 +724,7 @@ BRUSHED.gmap = function(){
 					map: map/*,
 					icon: include+"/img/marker.png"*/
 				  });
-			
+
 				  //Associate the styled map with the MapTypeId and set it to display.
 				  map.mapTypes.set('map_style', customMap);
 				  map.setMapTypeId('map_style');
@@ -740,7 +739,7 @@ $(document).ready(function(){
 	Modernizr.load([
 	{
 		test: Modernizr.placeholder,
-		nope: include+'/js/placeholder.js', 
+		nope: include+'/js/placeholder.js',
 		complete : function() {
 				if (!Modernizr.placeholder) {
 						/* Placeholders.init({
@@ -748,12 +747,12 @@ $(document).ready(function(){
 						hideOnFocus: false,
 						className: "yourClass",
 						textColor: "#999"
-						});  */   
+						});  */
 				}
 		}
 	}
 	]);
-	
+
 	// Preload the page with jPreLoader
 	$('body').jpreLoader({
 		splashID: "#jSplash",
@@ -764,11 +763,11 @@ $(document).ready(function(){
 			$('#circle').delay(250).animate({'opacity' : 1}, 500, 'linear');
 		}
 	});
-	
+
     if ($(window).width() > 767) {
 		BRUSHED.slider();
     }
-	
+
 	BRUSHED.nav();
 	BRUSHED.contentExp();
 	BRUSHED.contentShw();
