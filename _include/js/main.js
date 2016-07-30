@@ -90,6 +90,7 @@ $.ajax({
 		   }
 		}); */
 
+		console.log(data[2][0]);
 		var skippedMeeting = data[0][0]; //skipped date
 		var skippedDate = new Date(skippedMeeting);
 		var changedMeeting = data[0][1]; //next meeting date
@@ -100,6 +101,11 @@ $.ajax({
 		console.log("changedDate: "+changedDate);
 		console.log(skippedDate.getDate()===meetingDate.getDate());*/
 
+		var dueDate = new Date(data[3][0]);
+		if(today<dueDate){
+				return $('#clock').html('<p>'+data[2][0]+'</p>');
+		}
+		
 		if(skippedDate.getDate()===meetingDate.getDate()){
 			if(today<meetingDate){
 				return $('#clock').html('<p>Unser nächstes Treffen am <strong>'+d+'.'+m+'.'+y+'</strong> entfällt.</p><p>Next meeting is cancelled.</p>');
