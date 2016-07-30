@@ -90,7 +90,6 @@ $.ajax({
 		   }
 		}); */
 
-		console.log(data[2][0]);
 		var skippedMeeting = data[0][0]; //skipped date
 		var skippedDate = new Date(skippedMeeting);
 		var changedMeeting = data[0][1]; //next meeting date
